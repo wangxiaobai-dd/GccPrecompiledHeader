@@ -15,7 +15,7 @@ EXIT_FILE = "tmp_ccl_file"  # 检查编译进程存在
 ERR_PATTERN1 = re.compile(r'(.*)(error:)(.*)')
 ERR_PATTERN2 = re.compile(r'(.*)(\[.*\].*)')
 EXIT_COUNT = 3       # 编译进程不存在次数 脚本退出 
-REFRESH_TIHE = 1     # 刷新时间
+REFRESH_TIHE = 5     # 刷新时间
 
 targetList = []      # targetAfile
 compilingDict = {}   # 正在编译信息
@@ -73,6 +73,7 @@ def deleteTmpFile():
     for target in sys.argv[1:]:
         filePath = target + FILE_SUFFIX
         errorPath = target + ERROR_SUFFIX
+        # 删除targetAfile targetAerror
         if os.path.exists(filePath):
             os.remove(filePath)
         if os.path.exists(errorPath):
