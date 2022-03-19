@@ -28,7 +28,7 @@ make
 
 - 自动创建 inc.h 
 
--  修改 Makefile （参考 总结）
+-  修改 Makefile 依赖（参考 总结）
 
 ---
 总结：
