@@ -1,5 +1,6 @@
 
 /*
+ * ReplaceGch.sh 调用
  * 在cpp文件中首行插入inc.h文件
  */
 
@@ -12,6 +13,8 @@
 
 int main (int argc, char* argv[])
 {
+	if(argc < 2)
+		return;
 	std::string fileName = argv[1]; 
 	std::vector<std::string> fileVec;
 	{
