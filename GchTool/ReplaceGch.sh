@@ -30,7 +30,7 @@ sort -u temp2 > temp3
 # 插入新文件
 for line in $(cat temp3)
 do
-	./InsertInc "${1}${line}"
+	./InsertInc "${1}${line}" "inc.h"
 done
 
 # 删除旧文件include

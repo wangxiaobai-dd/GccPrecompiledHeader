@@ -13,9 +13,13 @@
 
 int main (int argc, char* argv[])
 {
-	if(argc < 2)
-		return;
+	if(argc < 3)
+	{
+		std::cout << "参数错误 ./InsertInc fileName inc.h" << std::endl;
+		return 1;
+	}
 	std::string fileName = argv[1]; 
+	std::string incName = argv[2];
 	std::vector<std::string> fileVec;
 	{
 		std::ifstream in(fileName, std::ios::in);
@@ -26,26 +30,31 @@ int main (int argc, char* argv[])
 	}
 	std::string inStr {"#include"};
 	auto iter = std::find_if(fileVec.begin(), fileVec.end(), [&inStr](const auto& str) { return str.find(inStr) != std::string::npos; });
+
+	std::string fileBak = fileName + ".bak"; 
+	std::string incStr = "#include \"" + incName + "\""; 
+	std::fstream out(fileBak, std::ios::out | std::ios::trunc);
+	// 最先#include inc.h
 	if(iter != fileVec.end())
 	{
-		std::string fileBak = fileName + ".bak"; 
-		std::string incStr = "#include \"inc.h\""; 
-		std::fstream out(fileBak, std::ios::out | std::ios::trunc);
 		fileVec.insert(iter, incStr); 
-		for(const auto& str : fileVec) 
-			out << str << std::endl; 
-		std::string exec = "cp ";
-		exec += fileBak; 
-		exec += " ";
-		exec += fileName; 
-		exec += ";rm "; 
-		exec += fileBak; 
-		out.close();
-		system(exec.c_str());
 	}
 	else
 	{
 		std::cout << argv[1] << "没有include" << std::endl;
+		auto iter = std::find_if(fileVec.begin(), fileVec.end(), [&inStr](const auto& str) { return str.find("*") == std::string::npos && str.find("//") == std::string::npos; });
+		if(iter != fileVec.end() && ++iter != fileVec.end())
+			fileVec.insert(iter, incStr);
 	}
+	for(const auto& str : fileVec) 
+		out << str << std::endl; 
+	std::string exec = "cp ";
+	exec += fileBak; 
+	exec += " ";
+	exec += fileName; 
+	exec += ";rm "; 
+	exec += fileBak; 
+	out.close();
+	system(exec.c_str());
 	return 0;
 }

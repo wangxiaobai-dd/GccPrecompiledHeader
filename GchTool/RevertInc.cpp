@@ -13,8 +13,12 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <set>
+#include <regex>
 
 using namespace std;
+
+const string INCLUDE = "#include";
 
 int main(int argc, char* argv[])
 {
@@ -25,6 +29,9 @@ int main(int argc, char* argv[])
 	}
 	string dir = argv[1];
 	string incFileName = argv[2];
+	string unifiedPrefix;	// 处理联合编译单元 一个大的cpp包含多个cpp
+	if(argc == 4)
+		unifiedPrefix = argv[3];
 
 	ifstream incIs{dir + "/" + incFileName};
 	if(!incIs.is_open())
@@ -34,9 +41,10 @@ int main(int argc, char* argv[])
 	}
 	vector<string> incContentVec;
 	string includeStr;
+	cout << "inc.h 包含:"<< endl;
 	while(getline(incIs, includeStr))
 	{
-		if(includeStr.find("#include") == string::npos)
+		if(includeStr.find(INCLUDE) == string::npos)
 			continue;
 		cout << includeStr << endl;
 		incContentVec.push_back(includeStr);
@@ -44,37 +52,80 @@ int main(int argc, char* argv[])
 	incIs.close();
 
 	const filesystem::path path{dir};
+	if(!unifiedPrefix.empty())
+	{
+		cout << "========== 处理联合编译单元 ==========" << endl;
+		string exec = "./InsertInc";
+		regex reg(".*\"(.*)\"");
+		for(auto const& dirEntry : filesystem::directory_iterator{path})
+		{
+			string fileName = dirEntry.path(); // TestRevertTool/dirA/unified_file.cpp
+			if(fileName.find(unifiedPrefix) == string::npos || fileName.find(".swp") != string::npos)
+				continue;
+
+			set<string> unifiedFileSet;
+			ifstream is{fileName};
+			string line;
+			bool findInc = false;
+			while(getline(is, line))
+			{
+				if(line.find(incFileName) != string::npos)
+				{
+					findInc = true;
+					continue;
+				}
+				if(!findInc && line.find(INCLUDE) != string::npos)
+					break;
+				cmatch m;
+				bool ret = std::regex_match(line.c_str(), m, std::regex(".*\"(.*)\""));
+				if(ret && m.size() == 2)
+					unifiedFileSet.insert(m.str(1));
+			}
+
+			for(auto file : unifiedFileSet)
+				system((exec + " " + dirEntry.path().parent_path().string() + "/" + file + " " + incFileName).c_str());
+
+			is.close();
+		}
+	}
+	cout << "========== 还原预编译头文件 ==========" << endl;
+
 	for(auto const& dirEntry : filesystem::directory_iterator{path}) 
 	{
 		string fileName = dirEntry.path();
-		if(fileName.find(".cpp") == string::npos)
+		if(fileName.find(".cpp") == string::npos || fileName.find(".swp") != string::npos)
 			continue;
 		ifstream is{fileName};
 		if(is.is_open())
 		{
-			cout << "isopen:" << fileName << endl;
-			string data;
-			fstream os{fileName + ".bak", ios::out | ios::trunc};
+			cout << "modify file:" << fileName << endl;
+			string line;
+			fstream os{fileName + ".tmp", ios::out | ios::trunc};
 			bool findInc = false;
-			while(getline(is, data))
+			while(getline(is, line))
 			{
-				if(data.find(incFileName) != string::npos)
+				// inc.h
+				if(line.find(incFileName) != string::npos)
 				{
-					// replace
+					// 替换预编译头文件
 					findInc = true;
-					for(auto line : incContentVec)
-						os << line << endl;
+					if(fileName.find(unifiedPrefix) == string::npos)
+					{
+						for(auto line : incContentVec)
+							os << line << endl;
+					}
 					continue;
 				}
-				if(!findInc && data.find("#include") != string::npos)
+				if(!findInc && line.find(INCLUDE) != string::npos)
 					break;
-				os << data << endl;
+				// 文件其他内容
+				os << line << endl;
 			}
 			if(findInc)
 			{
-				// overwrite
-				filesystem::copy(fileName + ".bak", fileName, filesystem::copy_options::overwrite_existing);
-				filesystem::remove(fileName + ".bak");
+				// 覆盖
+				filesystem::copy(fileName + ".tmp", fileName, filesystem::copy_options::overwrite_existing);
+				filesystem::remove(fileName + ".tmp");
 			}
 			is.close();
 			os.close();
