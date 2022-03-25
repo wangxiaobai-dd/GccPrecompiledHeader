@@ -10,7 +10,7 @@ GCHDIRS = dirA
 export CXXFLAGS = -Werror -Wall -Winvalid-pch
 
 targetA : 
-	@python2.7 ./gchcheck.py $(GCHDIRS)
+	#@python2.7 ./gchcheck.py $(GCHDIRS)
 	@ENTRY='$@file' DIR=$(DIRA) $(MAKE) -C $(DIRA)
 	@sleep 2
 
