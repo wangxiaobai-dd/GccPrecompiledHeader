@@ -9,6 +9,5 @@
  */
 
 
-#include "inc.h"
 #include "u1.cpp"
 #include "u2.cpp"

@@ -8,4 +8,9 @@
  *
  */
 
+#include "a.h"
+#include <iostream>
+#include <string>
+//#include "common.h"
+#include "common2.h"
 

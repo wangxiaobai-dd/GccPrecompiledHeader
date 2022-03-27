@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 {
 	if(argc < 3)
 	{
-		cout << "请输入路径和预编译头文件名: ./RevertInc TestRevertTool/dirA inc.h" << endl;
+		cout << "请输入路径和预编译头文件名: ./RevertInc TestRevertTool/dirA inc.h [unified]" << endl;
 		return 1;
 	}
 	string dir = argv[1];

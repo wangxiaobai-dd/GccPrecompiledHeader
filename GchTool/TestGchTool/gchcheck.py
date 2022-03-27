@@ -4,6 +4,8 @@
 # 预编译头可用性检查
 # 检查.gch 
 
+# v2 可以用 .d 依赖文件代替本脚本作用
+
 import re
 import os
 import sys

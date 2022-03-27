@@ -1,4 +1,9 @@
 #include "a.h"
+#include "common2.h"
 #include <iostream>
 #include <string>
+#include <vector>
+#include "common.h"
+#include <list>
 #include "a2.h"
+#include <tuple>

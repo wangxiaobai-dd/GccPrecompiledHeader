@@ -8,11 +8,17 @@
 # INFO          :
 # 
 
-CXXFLAGS += "-std=c++17"
 
 all: CheckInclude InsertInc RevertInc
 
+.PHONY : all clean
+
+CXXFLAGS = "-std=gnu++2a" "-g"
+
 CheckInclude: CheckInclude.o
+		$(CXX) $(CXXFLAGS) $^ -o $@
+
+NewCheckInclude: NewCheckInclude.o
 		$(CXX) $(CXXFLAGS) $^ -o $@
 
 InsertInc: InsertInc.o
@@ -22,4 +28,4 @@ RevertInc: RevertInc.o
 		$(CXX) $(CXXFLAGS) $^ -o $@
 
 clean:
-		@rm -f CheckInclude InsertInc RevertInc
+		@-rm -f  CheckInclude InsertInc RevertInc *.o

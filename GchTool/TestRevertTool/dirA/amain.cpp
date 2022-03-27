@@ -1,4 +1,7 @@
-#include "inc.h"
+#include "a.h"
+#include <iostream>
+#include <string>
+#include "common.h"
 #include "a2.h"
 
 using namespace std;
