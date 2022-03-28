@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
 				{
 					// 替换预编译头文件
 					findInc = true;
-					if(fileName.find(unifiedPrefix) == string::npos)
+					if(unifiedPrefix.empty() || fileName.find(unifiedPrefix) == string::npos)
 					{
 						for(auto line : incContentVec)
 							os << line << endl;
@@ -125,8 +125,8 @@ int main(int argc, char* argv[])
 			{
 				// 覆盖
 				filesystem::copy(fileName + ".tmp", fileName, filesystem::copy_options::overwrite_existing);
-				filesystem::remove(fileName + ".tmp");
 			}
+			filesystem::remove(fileName + ".tmp");
 			is.close();
 			os.close();
 		}
