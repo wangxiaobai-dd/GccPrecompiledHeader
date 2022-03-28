@@ -7,6 +7,13 @@ if [ $# -ne 2 ];then
 	exit
 fi
 
+dir=${1}
+num=${2}
+
+if [[ "$dir" != */ ]]; then
+	dir="$dir"/; 
+fi
+
 printf "**************开始处理*********\n"
 # 处理频率前N头文件
 # include <xx.h> 替换为 include.<xx.h>
@@ -18,7 +25,7 @@ fi
 echo ${content}
 for line in ${content}
 do
-	grep  "${line}" ${1}*.cpp -w  >> temp2
+	grep  "${line}" "$dir"*.cpp -w  >> temp2
 done
 
 awk -F ":" '{print $1}' temp2 > temp3
@@ -30,7 +37,7 @@ sort -u temp2 > temp3
 # 插入新文件
 for line in $(cat temp3)
 do
-	./InsertInc "${1}${line}" "inc.h"
+	./InsertInc ""$dir"${line}" "inc.h"
 done
 
 # 删除旧文件include
@@ -38,31 +45,31 @@ for line in $(cat temp3)
 do
 	for del in ${content}
 	do
-		sed -i '/'${del}'/d' ${1}/${line}
+		sed -i '/'${del}'/d' "$dir"/${line}
 	done
 done
 
 # 创建预编译inc.h 头文件
-echo 开始创建${1}inc.h 文件...
-if [ -e ${1}inc.h ];then
+echo 开始创建"$dir"inc.h 文件...
+if [ -e "$dir"inc.h ];then
 	echo 删除旧inc.h文件
-	rm -f ${1}inc.h
+	rm -f "$dir"inc.h
 fi
 
-echo \#ifndef _INC_H_ > ${1}inc.h
-echo \#define _INC_H_ >> ${1}inc.h
-echo >> ${1}inc.h
+echo \#ifndef _INC_H_ > "$dir"inc.h
+echo \#define _INC_H_ >> "$dir"inc.h
+echo >> "$dir"inc.h
 
 for line in ${content}
 do
-	echo "${line}" >> ${1}inc.h
+	echo "${line}" >> "$dir"inc.h
 done
 
-echo >> ${1}inc.h
-echo \#endif >> ${1}inc.h
-sed 's/\./\ /' ${1}inc.h > ${1}inc.h.tmp
-cp ${1}inc.h.tmp ${1}inc.h
-rm ${1}inc.h.tmp
+echo >> "$dir"inc.h
+echo \#endif >> "$dir"inc.h
+sed 's/\./\ /' "$dir"inc.h > "$dir"inc.h.tmp
+cp "$dir"inc.h.tmp "$dir"inc.h
+rm "$dir"inc.h.tmp
 
 rm -rf temp1 temp2 temp3 cppset
 printf "**************结束处理*********\n"
