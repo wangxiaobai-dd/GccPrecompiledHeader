@@ -1,8 +1,10 @@
-#include "a.h"		频数: 5		频率:0.833333
-#include <iostream>		频数: 5		频率:0.833333
-#include <string>		频数: 5		频率:0.833333
-#include <vector>		频数: 5		频率:0.833333
-#include "common.h"		频数: 4		频率:0.666667
-#include "common2.h"		频数: 2		频率:0.333333
-#include "a2.h"		频数: 1		频率:0.166667
-#include <tuple>		频数: 1		频率:0.166667
+目录下 cpp 数目: 6
+
+#include "a.h"		频数: 5		频率:0.833333		from:TestRevertTool/dirA/u2.cpp
+#include <iostream>		频数: 5		频率:0.833333		from:TestRevertTool/dirA/u2.cpp
+#include <string>		频数: 5		频率:0.833333		from:TestRevertTool/dirA/u2.cpp
+#include <vector>		频数: 5		频率:0.833333		from:TestRevertTool/dirA/a.h
+#include "common.h"		频数: 4		频率:0.666667		from:TestRevertTool/dirA/u2.cpp
+#include "common2.h"		频数: 2		频率:0.333333		from:TestRevertTool/dirA/u1.cpp
+#include "a2.h"		频数: 1		频率:0.166667		from:TestRevertTool/dirA/amain.cpp
+#include <tuple>		频数: 1		频率:0.166667		from:TestRevertTool/dirA/a2.h

@@ -22,10 +22,19 @@ using namespace std;
 
 const string INCLUDE = "#include";
 const string SPACE = " ";
-set<string> findDirSet;
 
-void FindInclude(string header, set<string>& recordedSet, map<string, int>& countMap);
-void ReadFile(string filePath, std::set<string>& recordedSet, std::map<string, int>& countMap);
+set<string> findDirSet;
+map<string, int> countMap;
+map<string, string> headerSourceMap;
+
+string MergeInclude(string header);
+void FindInclude(string header, set<string>& recordedSet, string fromFile);
+void ReadFile(string filePath, set<string>& recordedSet, string fromFile);
+
+string MergeInclude(string header)
+{
+	return INCLUDE + SPACE + header; // #include "a.h"
+}
 
 string GetHeader(string lineStr)
 {
@@ -37,14 +46,19 @@ string GetHeader(string lineStr)
 		{
 			lineStr = lineStr.substr(pos);
 			pos = lineStr.rfind("\"");
-			lineStr = lineStr.substr(0, pos+1);
+			if(pos != string::npos)
+				lineStr = lineStr.substr(0, pos+1);
 		}
 		else
 		{
 			pos = lineStr.find("<");
-			lineStr = lineStr.substr(pos);
-			pos = lineStr.find(">");
-			lineStr = lineStr.substr(0, pos+1);
+			if(pos != string::npos)
+			{
+				lineStr = lineStr.substr(pos);
+				pos = lineStr.find(">");
+				if(pos != string::npos)
+					lineStr = lineStr.substr(0, pos+1);
+			}
 		}
 		return lineStr;
 	}
@@ -87,21 +101,23 @@ string GetFilePath(string header)
  * 本编译单元递归查找头文件
  * header: "a.h" 或 <iostream>
  */
-void FindInclude(string header, set<string>& recordedSet, map<string, int>& countMap)
+void FindInclude(string header, set<string>& recordedSet, string fromFile)
 {
 	if(!recordedSet.insert(header).second)
 		return;
+	headerSourceMap[MergeInclude(header)] = fromFile;
 	cout << "FindInclude:" << header << endl;
 
 	auto filePath = GetFilePath(header);
 	// header: "a.h"
 	if(filePath.size())
 	{
-		ReadFile(filePath, recordedSet, countMap);
+		fromFile = filePath;
+		ReadFile(filePath, recordedSet, fromFile);
 	}
 }
 
-void ReadFile(string filePath, std::set<string>& recordedSet, std::map<string, int>& countMap)
+void ReadFile(string filePath, set<string>& recordedSet, string fromFile)
 {
 	ifstream in(filePath);
 	if(in.is_open())
@@ -109,18 +125,18 @@ void ReadFile(string filePath, std::set<string>& recordedSet, std::map<string, i
 		string lineStr;
 		while(getline(in, lineStr))
 		{
-			if(lineStr.find(".cpp") != string::npos || lineStr.find("//") != string::npos)\
+			if(lineStr.find(".cpp") != string::npos || lineStr.find("//#") != string::npos)
 				continue;
 			auto header = GetHeader(lineStr); // "a.h"
 			if(header.size() && !recordedSet.contains(header))
 			{
-				auto include = INCLUDE + SPACE + header; // #include "a.h" 
+				auto include = MergeInclude(header); 
 				countMap[include] += 1;
 				//cout << "add_A:" << include << " from file:" << filePath << " count:" << countMap[include] << endl;
-				FindInclude(header, recordedSet, countMap);
+				FindInclude(header, recordedSet, fromFile);
 			}
 		}
-		in.close ();
+		in.close();
 	}
 }
 
@@ -156,14 +172,13 @@ int main(int argc, char* argv[])
 		fileVec.push_back(fileNameStr);
 	in.close();
 
-	map<string, int> countMap;
 	int cppCount = 0;
 	for(const auto& fileName : fileVec)	// a.cpp a2.cpp
 	{
 		++cppCount;
 		cout << "\n---" << fileName << "---" << endl;
 		set<string> recordedSet;
-		ReadFile(fileName, recordedSet, countMap);
+		ReadFile(fileName, recordedSet, fileName);
 	}
 
 	vector<pair<string,int>> countVec(countMap.begin(), countMap.end());
@@ -172,8 +187,11 @@ int main(int argc, char* argv[])
 	ofstream out2("analyseInc2.txt");
 	for(const auto& item : countVec)
 		out << item.first << endl;
+	out2 <<"目录下 cpp 数目: " << cppCount << "\n" << endl;
 	for(const auto& item : countVec)
-		out2 << item.first <<"\t\t频数: " << item.second << "\t\t频率:" << (float)item.second / cppCount << endl;
+	{
+		out2 << item.first <<"\t\t频数: " << item.second << "\t\t频率:" << (float)item.second / cppCount << "\t\tfrom:" << headerSourceMap[item.first] << endl;
+	}
 	out.close();
 	out2.close();
 	system("rm -f cppset");
