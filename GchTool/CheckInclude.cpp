@@ -17,7 +17,6 @@
 #include <map>
 #include <algorithm>
 #include <filesystem>
-#include <variant>
 
 using namespace std;
 
@@ -158,8 +157,10 @@ int main(int argc, char* argv[])
 	in.close();
 
 	map<string, int> countMap;
+	int cppCount = 0;
 	for(const auto& fileName : fileVec)	// a.cpp a2.cpp
 	{
+		++cppCount;
 		cout << "\n---" << fileName << "---" << endl;
 		set<string> recordedSet;
 		ReadFile(fileName, recordedSet, countMap);
@@ -172,7 +173,7 @@ int main(int argc, char* argv[])
 	for(const auto& item : countVec)
 		out << item.first << endl;
 	for(const auto& item : countVec)
-		out2 << item.first <<"频率: " << item.second << endl;
+		out2 << item.first <<"\t\t频数: " << item.second << "\t\t频率:" << (float)item.second / cppCount << endl;
 	out.close();
 	out2.close();
 	system("rm -f cppset");

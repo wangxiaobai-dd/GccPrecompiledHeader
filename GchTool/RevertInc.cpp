@@ -27,6 +27,7 @@ int main(int argc, char* argv[])
 		cout << "请输入路径和预编译头文件名: ./RevertInc TestRevertTool/dirA inc.h [unified]" << endl;
 		return 1;
 	}
+	string invokePath = filesystem::path{argv[0]}.parent_path();
 	string dir = argv[1];
 	string incFileName = argv[2];
 	string unifiedPrefix;	// 处理联合编译单元 一个大的cpp包含多个cpp
@@ -55,7 +56,7 @@ int main(int argc, char* argv[])
 	if(!unifiedPrefix.empty())
 	{
 		cout << "========== 处理联合编译单元 ==========" << endl;
-		string exec = "./InsertInc";
+		string exec = invokePath + "/InsertInc";
 		regex reg(".*\"(.*)\"");
 		for(auto const& dirEntry : filesystem::directory_iterator{path})
 		{

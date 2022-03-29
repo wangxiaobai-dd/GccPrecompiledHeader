@@ -1,9 +1,8 @@
-#include "a.h"频率: 5
-#include "common2.h"频率: 5
-#include <iostream>频率: 5
-#include <string>频率: 5
-#include <vector>频率: 5
-#include "common.h"频率: 4
-#include <list>频率: 4
-#include "a2.h"频率: 1
-#include <tuple>频率: 1
+#include "a.h"		频数: 5		频率:0.833333
+#include <iostream>		频数: 5		频率:0.833333
+#include <string>		频数: 5		频率:0.833333
+#include <vector>		频数: 5		频率:0.833333
+#include "common.h"		频数: 4		频率:0.666667
+#include "common2.h"		频数: 2		频率:0.333333
+#include "a2.h"		频数: 1		频率:0.166667
+#include <tuple>		频数: 1		频率:0.166667

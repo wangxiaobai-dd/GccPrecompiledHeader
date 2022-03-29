@@ -18,7 +18,7 @@ printf "**************开始处理*********\n"
 # 处理频率前N头文件
 # include <xx.h> 替换为 include.<xx.h>
 sed 's/\ /./' analyseInc.txt > temp1
-content=$(sed -n 1,${2}p temp1)
+content=$(sed -n 1,"$num"p temp1)
 if [ -e temp2 ]; then
 	rm temp2
 fi
