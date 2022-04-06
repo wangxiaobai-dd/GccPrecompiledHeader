@@ -1,0 +1,2 @@
+28127 pts/17   S+     0:00 /bin/sh -c ENTRY='targetBfile' DIR=dirB make -C dirB 2>>targetBerror
+28128 pts/17   S+     0:00 make -C dirB

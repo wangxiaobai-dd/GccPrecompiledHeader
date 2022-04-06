@@ -108,6 +108,8 @@ int main(int argc, char* argv[])
 				// inc.h
 				if(line.find(incFileName) != string::npos)
 				{
+					if(findInc)
+						continue;
 					// 替换预编译头文件
 					findInc = true;
 					if(unifiedPrefix.empty() || fileName.find(unifiedPrefix) == string::npos)

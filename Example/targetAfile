@@ -1,0 +1,11 @@
+begin dirA/inc.h
+end dirA/inc.h
+begin dirA/a2.cpp
+end dirA/a2.cpp
+begin dirA/a.cpp
+end dirA/a.cpp
+begin dirA/amain.cpp
+end dirA/amain.cpp
+beginlink dirA/aobj
+endlink dirA/aobj
+finish
