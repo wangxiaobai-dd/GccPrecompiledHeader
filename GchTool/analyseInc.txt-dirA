@@ -1,8 +1,8 @@
 #include "a.h"
+#include "common.h"
+#include "inc.h"
 #include <iostream>
 #include <string>
 #include <vector>
-#include "common.h"
-#include "common2.h"
 #include "a2.h"
 #include <tuple>

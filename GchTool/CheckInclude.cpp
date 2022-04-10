@@ -106,7 +106,7 @@ void FindInclude(string header, set<string>& recordedSet, string fromFile)
 	if(!recordedSet.insert(header).second)
 		return;
 	headerSourceMap[MergeInclude(header)] = fromFile;
-	cout << "FindInclude:" << header << endl;
+	// cout << "FindInclude:" << header << endl;
 
 	auto filePath = GetFilePath(header);
 	// header: "a.h"
@@ -147,6 +147,7 @@ int main(int argc, char* argv[])
 		cout << "请输入路径 ./CheckInclude CheckDir [FindDirA] [FindDirB] ..." << endl;
 		return 0;
 	}
+	cout << "开始" << endl;
 	string checkDir = argv[1];
 	if(checkDir.ends_with("/"))
 		checkDir = checkDir.substr(0, checkDir.size() - 1);
@@ -176,15 +177,18 @@ int main(int argc, char* argv[])
 	for(const auto& fileName : fileVec)	// a.cpp a2.cpp
 	{
 		++cppCount;
-		cout << "\n---" << fileName << "---" << endl;
+		// cout << "\n---" << fileName << "---" << endl;
 		set<string> recordedSet;
 		ReadFile(fileName, recordedSet, fileName);
 	}
 
 	vector<pair<string,int>> countVec(countMap.begin(), countMap.end());
 	sort(countVec.begin(), countVec.end(), [](const auto& k1, const auto& k2) { return k1.second > k2.second; });
-	ofstream out("analyseInc.txt");
-	ofstream out2("analyseInc2.txt");
+	filesystem::path checkDirPath{checkDir};
+	string outFile1 = "analyseInc.txt-" + checkDirPath.filename().string();
+	string outFile2 = "analyseInc2.txt-" + checkDirPath.filename().string();
+	ofstream out(outFile1);
+	ofstream out2(outFile2);
 	for(const auto& item : countVec)
 		out << item.first << endl;
 	out2 <<"目录下 cpp 数目: " << cppCount << "\n" << endl;
@@ -195,5 +199,6 @@ int main(int argc, char* argv[])
 	out.close();
 	out2.close();
 	system("rm -f cppset");
+	cout << "完成，生成 " << outFile1 << "    " << outFile2 << endl; 
 	return 0;
 }
