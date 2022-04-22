@@ -1,10 +1,11 @@
 目录下 cpp 数目: 3
 
-#include "a.h"		频数: 3		频率:1		from:TestGchTool/dirA/inc.h
-#include "common.h"		频数: 3		频率:1		from:TestGchTool/dirA/inc.h
-#include "inc.h"		频数: 3		频率:1		from:TestGchTool/dirA/amain.cpp
-#include <iostream>		频数: 3		频率:1		from:TestGchTool/dirA/inc.h
-#include <string>		频数: 3		频率:1		from:TestGchTool/dirA/inc.h
-#include <vector>		频数: 3		频率:1		from:TestGchTool/dirA/a.h
-#include "a2.h"		频数: 1		频率:0.333333		from:TestGchTool/dirA/amain.cpp
-#include <tuple>		频数: 1		频率:0.333333		from:TestGchTool/dirA/a2.h
+#include "a.h"		COUNT:3		RATE:1		From:TestGchTool/dirA/inc.h
+#include "common.h"		COUNT:3		RATE:1		From:TestGchTool/dirA/inc.h
+#include "inc.h"		COUNT:3		RATE:1		From:TestGchTool/dirA/amain.cpp
+#include <iostream>		COUNT:3		RATE:1		From:TestGchTool/dirA/inc.h
+#include <list>		COUNT:3		RATE:1		From:TestGchTool/common/common.h
+#include <string>		COUNT:3		RATE:1		From:TestGchTool/dirA/inc.h
+#include <vector>		COUNT:3		RATE:1		From:TestGchTool/dirA/a.h
+#include "a2.h"		COUNT:1		RATE:0.333333		From:TestGchTool/dirA/amain.cpp
+#include <tuple>		COUNT:1		RATE:0.333333		From:TestGchTool/dirA/a2.h

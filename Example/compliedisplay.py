@@ -14,7 +14,7 @@ ERROR_SUFFIX = "error"
 EXIT_FILE = "tmp_ccl_file"  # 检查编译进程存在
 ERR_PATTERN1 = re.compile(r'(.*)(error:)(.*)')
 ERR_PATTERN2 = re.compile(r'(.*)(\[.*\].*)')
-EXIT_COUNT = 3       # 编译进程不存在次数 脚本退出 
+EXIT_COUNT = 4       # 编译进程不存在次数 脚本退出 
 REFRESH_TIHE = 5     # 刷新时间
 
 targetList = []      # targetAfile
@@ -103,7 +103,10 @@ def checkExit():
         exit()
 
     global exitCount
-    os.system("ps x | grep -E \"cclplus|make -C\" | grep " + tty + "| grep -v grep > " + EXIT_FILE)
+    if tty != "":
+        os.system("ps x | grep -E \"cclplus|make -C\" | grep " + tty + "| grep -v grep > " + EXIT_FILE)
+    else:
+        os.system("ps x | grep -E \"cclplus|make -C\" | grep -v grep > " + EXIT_FILE)
     if not(os.path.getsize(EXIT_FILE)):
         exitCount += 1
     else:
@@ -116,7 +119,10 @@ def checkExit():
             output()
             exit()
         else:
-            pass
+            deleteTmpFile()
+            stateStr = COLOR_STR("编译完成 " + costTime() + "exit~~~", ColorType.GREEN)
+            output(True)
+            exit()
 
 # 过滤非编译错误
 def filterError(line):
@@ -156,7 +162,7 @@ def dealErrorInfo(line):
 
 
 # 显示编译信息
-def output():
+def output(finish = False):
     global stateStr
     global lastRefreshTime
     outList = []
@@ -189,7 +195,7 @@ def output():
         outList.append(COLOR_STR("--------------------------------- " + targetFileDict[target] + " --------------------------------", ColorType.CYAN))
         if state == TargetState.LINK:
             outList.append(COLOR_STR("正在链接:   ", ColorType.YELLOW) + COLOR_STR(fileDir, ColorType.BLUE_BG))
-        elif state == TargetState.FINISH:
+        elif state == TargetState.FINISH or finish == True:
             outList.append(COLOR_STR("已完成", ColorType.GREEN))
         else:
             outList.append(COLOR_STR("正在编译:   ", ColorType.GREEN) + COLOR_STR(fileDir, ColorType.BLUE_BG))
@@ -224,7 +230,10 @@ def monitor():
     global beginTime
     global tty
     beginTime = time.time()
-    tty = os.ttyname(1).replace("/dev/", "")
+    try:
+        tty = os.ttyname(1).replace("/dev/", "")
+    except OSError:
+        pass
     if os.path.exists(EXIT_FILE):
         os.remove(EXIT_FILE)
     for target in sys.argv[1:]:
@@ -234,8 +243,11 @@ def monitor():
             os.remove(filePath)
         if os.path.exists(errorPath):
             os.remove(errorPath)
-        os.mknod(filePath)
-        os.mknod(errorPath)
+        try:
+            os.mknod(filePath)
+            os.mknod(errorPath)
+        except OSError:
+            pass
         f = open(filePath, "r")
         fileList.append(f)
         ef = open (errorPath, "r")

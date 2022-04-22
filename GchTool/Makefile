@@ -9,7 +9,7 @@
 # 
 
 
-all: CheckInclude InsertInc RevertInc
+all: CheckInclude InsertInc RevertInc GetCommonInclude
 
 .PHONY : all clean
 
@@ -18,13 +18,13 @@ CXXFLAGS = "-std=gnu++2a" "-g"
 CheckInclude: CheckInclude.o
 		$(CXX) $(CXXFLAGS) $^ -o $@
 
-NewCheckInclude: NewCheckInclude.o
-		$(CXX) $(CXXFLAGS) $^ -o $@
-
 InsertInc: InsertInc.o
 		$(CXX) $(CXXFLAGS) $^ -o $@
 
 RevertInc: RevertInc.o
+		$(CXX) $(CXXFLAGS) $^ -o $@
+
+GetCommonInclude: GetCommonInclude.o
 		$(CXX) $(CXXFLAGS) $^ -o $@
 
 clean:

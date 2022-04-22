@@ -57,7 +57,6 @@ int main(int argc, char* argv[])
 	{
 		cout << "========== 处理联合编译单元 ==========" << endl;
 		string exec = invokePath + "/InsertInc";
-		regex reg(".*\"(.*)\"");
 		for(auto const& dirEntry : filesystem::directory_iterator{path})
 		{
 			string fileName = dirEntry.path(); // TestRevertTool/dirA/unified_file.cpp

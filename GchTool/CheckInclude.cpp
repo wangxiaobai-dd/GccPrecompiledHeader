@@ -194,7 +194,7 @@ int main(int argc, char* argv[])
 	out2 <<"目录下 cpp 数目: " << cppCount << "\n" << endl;
 	for(const auto& item : countVec)
 	{
-		out2 << item.first <<"\t\t频数: " << item.second << "\t\t频率:" << (float)item.second / cppCount << "\t\tfrom:" << headerSourceMap[item.first] << endl;
+		out2 << item.first <<"\t\tCOUNT:" << item.second << "\t\tRATE:" << (float)item.second / cppCount << "\t\tFrom:" << headerSourceMap[item.first] << endl;
 	}
 	out.close();
 	out2.close();
