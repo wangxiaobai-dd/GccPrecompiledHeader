@@ -77,9 +77,6 @@ done
 
 echo >> ${GchFile}
 echo \#endif >> ${GchFile}
-sed 's/\./\ /' ${GchFile} > ${GchFile}.tmp
-cp ${GchFile}.tmp ${GchFile}
-rm ${GchFile}.tmp
 
 rm -rf temp1 temp2 temp3 cppset
 
