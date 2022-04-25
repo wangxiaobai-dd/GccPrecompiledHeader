@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
 				else
 				{
 					cout << file << " file doesn't exit!" << endl;
-					//return 1;
+					return 1;
 				}
 			}
 		}
@@ -100,7 +100,7 @@ int main(int argc, char* argv[])
 				else 
 				{
 					cout << dir << " directory doesn't exit!" << endl;
-					//return 1;
+					return 1;
 				}
 			}
 		}
@@ -115,7 +115,7 @@ int main(int argc, char* argv[])
 	{
 		cout << "至少两个analyseInc2.txt 和 baseDir" << endl;
 		cout << "使用方法: ./GetCommonInclude --files analyseInc-1.txt,analyseInc-2.txt --base dirA,dirB 逗号分割参数 --rate 0.9" << endl;
-		// return 1;
+		return 1;
 	}
 
 	std::map<string, int> countMap;
