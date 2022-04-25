@@ -53,7 +53,7 @@ do
 	for del in ${content}
 	do
 		#echo ${del} "$dir"${line}
-		sed -i "/${del}/d" "$dir"${line}
+		sed -i "\~${del}~d" "$dir"${line}
 	done
 done
 
