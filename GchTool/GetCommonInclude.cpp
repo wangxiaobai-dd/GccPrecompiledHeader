@@ -111,9 +111,9 @@ int main(int argc, char* argv[])
 	}
 	cout << "rate:" << rate << endl;
 
-	if(fileVec.size() < 3 || baseVec.empty())
+	if(baseVec.empty())
 	{
-		cout << "至少两个analyseInc2.txt 和 baseDir" << endl;
+		cout << "--base 参数为空!" << endl;
 		cout << "使用方法: ./GetCommonInclude --files analyseInc-1.txt,analyseInc-2.txt --base dirA,dirB 逗号分割参数 --rate 0.9" << endl;
 		return 1;
 	}

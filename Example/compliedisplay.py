@@ -33,6 +33,24 @@ isError = False
 targetStateDict = {} # 编译状态 TargetState
 tty = ""             # 当前终端
 
+timeDict = {}        # 记录编译链接时间
+
+class DirItem:
+    def __init__(self, _dir):
+        self.compileBeginTime = time.time()
+        self.compileEndTime = 0
+        self.linkBeginTime = 0
+        self.linkEndTime = 0
+        self.dir = _dir
+
+    def getTime(self):
+        if self.compileEndTime >= self.compileBeginTime and self.linkEndTime >= self.linkBeginTime:
+            cMin, cSec = divmod(int(self.compileEndTime - self.compileBeginTime), 60)
+            lMin, lSec = divmod(int(self.linkEndTime - self.linkBeginTime), 60)
+            return self.dir + " 编译耗时:" + str(cMin) + "分" + str(cSec) + "秒  链接耗时:" + str(lMin) + "分" + str(lSec) + "秒" 
+        return ""
+
+
 class TargetState():
     COMPILE = 1 
     LINK = 2 
@@ -46,6 +64,11 @@ class ColorType():
     YELLOW = 4 
     BLUE_BG = 5
 
+def printTimeDict(color):
+    for item in timeDict.values():
+        str = item.getTime()
+        if str != "":
+            print COLOR_STR(str, color)
 
 # 输出颜色
 def COLOR_STR(str, type):
@@ -216,9 +239,11 @@ def output(finish = False):
         if stateStr != "":
             if isError == True:
                 print COLOR_STR("状态:  ", ColorType.RED)
+                printTimeDict(ColorType.RED)
             else:
                 print COLOR_STR("状态:  ", ColorType.GREEN)
-            print stateStr
+                printTimeDict(ColorType.GREEN)
+            print "\n" + stateStr + "\n"
         else:
             print COLOR_STR("状态:  ", ColorType.YELLOW)
             print COLOR_STR("正在编译 " + costTime(), ColorType.YELLOW)
@@ -266,9 +291,14 @@ def monitor():
         for file in fileList:
             fileName = file.name # fileName : targetAfile
             lines = file.readlines()
-            for line in lines:
+            for line in lines:  # line: begin base/xxx.cpp
                 lineList = line.strip().split(" ")
                 op = lineList[0]
+                dir = ""
+                if op == "begin" or op == "beginlink" or op == "endlink":
+                    dir = lineList[1].split("/")[0]# lineList[1]: base/xxx.cpp dir:base
+                    if not timeDict.has_key(dir):
+                        timeDict[dir] = DirItem(dir)
                 if op == "begin":
                     compilingDict[fileName].append(lineList[1])
                 elif op == "end":
@@ -276,9 +306,11 @@ def monitor():
                 elif op == "beginlink":
                     compilingDict[fileName].append(lineList[1])
                     targetStateDict[fileName] = TargetState.LINK
+                    timeDict[dir].linkBeginTime = timeDict[dir].compileEndTime = time.time()
                 elif op == "endlink":
                     compilingDict[fileName].remove(lineList[1])
                     targetStateDict[fileName] = TargetState.COMPILE
+                    timeDict[dir].linkEndTime = time.time()
                 elif op == "finish":
                     targetStateDict[fileName] = TargetState.FINISH
 
