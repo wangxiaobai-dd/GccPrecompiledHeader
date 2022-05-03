@@ -29,9 +29,10 @@ else
 	content=$(sed -n 1,"$num"p ${AnalyseFile})
 fi
 echo ${content}
+IFS=$'\n'
 for line in ${content}
 do
-	IFS=$'\n'
+	echo "${line}"
 	grep  "${line}" "$dir"*.cpp -w  >> temp2
 done
 
@@ -78,6 +79,6 @@ done
 echo >> ${GchFile}
 echo \#endif >> ${GchFile}
 
-rm -rf temp1 temp2 temp3 cppset
+#rm -rf temp1 temp2 temp3 cppset
 
 printf "**************结束处理*********\n"
