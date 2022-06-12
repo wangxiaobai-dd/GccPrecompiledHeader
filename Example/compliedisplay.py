@@ -306,7 +306,9 @@ def monitor():
                 elif op == "beginlink":
                     compilingDict[fileName].append(lineList[1])
                     targetStateDict[fileName] = TargetState.LINK
-                    timeDict[dir].linkBeginTime = timeDict[dir].compileEndTime = time.time()
+                    if timeDict[dir].compileBeginTime != 0:
+                        timeDict[dir].compileEndTime = time.time()
+                    timeDict[dir].linkBeginTime = time.time()
                 elif op == "endlink":
                     compilingDict[fileName].remove(lineList[1])
                     targetStateDict[fileName] = TargetState.COMPILE
