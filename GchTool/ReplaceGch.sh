@@ -3,7 +3,7 @@
 # 脚本将analyseInc前N头文件从cpp文件剔除，并且在这些cpp文件首行插入${GchHeader}
 
 if [[ $# < 1 ]];then
-	echo 脚本用法,请输入路径及处理数目 e.g. : ./ReplaceGCH.sh dirA/ 10
+	echo 脚本用法,请输入路径及处理数目 e.g. : ./ReplaceGch.sh dirA/ 10
 	exit
 fi
 
@@ -29,7 +29,7 @@ else
 	content=$(sed -n 1,"$num"p ${AnalyseFile})
 fi
 echo ${content}
-IFS=$'\n'
+IFS=$'\n' # 对所有cpp包含inc.h 可以注释这行
 for line in ${content}
 do
 	echo "${line}"
